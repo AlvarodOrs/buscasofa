@@ -1,4 +1,6 @@
 # Actividad Grupal
+IMPORTANTE:
+Para empezar a hacer cosas, leer `TODO.md` POR FAVOR
 ## Iniciando buscasofa-server
 Creación de la tabla de usuarios en mySQL (para despliegue)
 
