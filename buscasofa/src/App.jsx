@@ -27,6 +27,9 @@ import './App.css';
 // El componente Header se encarga de mostrar la barra de navegación y el estado de autenticación del usuario.
 // El componente Routes se encarga de definir las diferentes rutas de la aplicación y los componentes que se renderizan en cada ruta.
 // El componente BrowserRouter se encarga de gestionar la navegación entre las diferentes rutas de la aplicación.
+function PageFooter({path}) {
+  if (path) return <><Footer /></>
+}
 function AppContent() {
   const [stations, setStations] = useState([]);
   const [user] = useState(() =>
@@ -38,7 +41,7 @@ function AppContent() {
   const neededAPI =
     ["/", "/mapa", "/lista"].includes(location.pathname) ||
      /^\/station\/[^/]+$/.test(location.pathname);
-
+  const neededFooter = !["/mapa", "/about"].includes(location.pathname);
     useEffect(() => {
       fetchFuelPrices()
         .then(data => {
@@ -70,7 +73,7 @@ function AppContent() {
           <Route path="*"            element={<PageNotFound />} /* New */ /> 
         </Routes>
         {/* )} */}
-        <Footer />
+        <PageFooter path={neededFooter} />
     </>
   );
 }
