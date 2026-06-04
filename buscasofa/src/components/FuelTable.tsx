@@ -5,6 +5,24 @@ import FuelFilters from './FuelFilters';
 // @ts-ignore
 import './FuelTable.css';
 
+
+const hasPrice = (val: string) => !!val && val.replace(',', '.') !== '' && val !== '-';
+
+const SortCol = ({ field, label, sortField, sortOrder, onSort }: {
+  field: string;
+  label: string;
+  sortField: string;
+  sortOrder: 'asc' | 'desc';
+  onSort: (field: string) => void;
+}) => (
+  <th>
+    <button className="sortable" onClick={() => onSort(field)}>
+      {label}{' '}
+      {sortField === field ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
+    </button>
+  </th>
+);
+
 const FuelTable = ({ stations }) => {
 
   const [pageSize, setPageSize] = useState(20);
@@ -40,10 +58,9 @@ const FuelTable = ({ stations }) => {
   );
 
   // Filtrado
-  const hasPrice = (val: string) => !!val && val.replace(',', '.') !== '' && val !== '-';
   const filteredStations = useMemo(() => {
     return stations.filter(station => {
-      if (!hasPrice(station['Precio Gasoleo A']) && !hasPrice(station['Precio Gasolina 95 E5'])) return false;
+      // if (!hasPrice(station['Precio Gasoleo A']) && !hasPrice(station['Precio Gasolina 95 E5'])) return false;
 
       const matchProvince = !selectedProvince || station.Provincia === selectedProvince;
       const matchCity = !selectedCity || station.Municipio === selectedCity;
@@ -54,26 +71,35 @@ const FuelTable = ({ stations }) => {
 
   // Ordenación
   const sortedStations = useMemo(() => {
+    const isPriceField = sortField.startsWith('Precio');
+
     return [...filteredStations].sort((a, b) => {
       const aRaw = a[sortField] || '';
       const bRaw = b[sortField] || '';
+      
+      if (isPriceField) {
+        const aEmpty = !hasPrice(aRaw);
+        const bEmpty = !hasPrice(bRaw);
+        if (aEmpty && bEmpty) return 0;
+        if (aEmpty) return 1;
+        if (bEmpty) return -1;
+        
+        const aNum = parseFloat(aRaw.replace(',', '.'));
+        const bNum = parseFloat(bRaw.replace(',', '.'));
+        const isNumeric = !isNaN(aNum) && !isNaN(bNum);
+        
+        const cmp = aNum - bNum;
+        return sortOrder === 'asc' ? cmp : -cmp;
+      }
+      const cmp = aRaw.trimStart().localeCompare(bRaw.trimStart(), 'es', {
+        // sensitivity: false,
+        numeric: true,
+        ignorePunctuation: true
+      });
 
-      const aNum = parseFloat(aRaw.replace(',', '.'));
-      const bNum = parseFloat(bRaw.replace(',', '.'));
-      const isNumeric = !isNaN(aNum) && !isNaN(bNum);
-
-      const aEmpty = !hasPrice(aRaw);
-      const bEmpty = !hasPrice(bRaw);
-      if (aEmpty && bEmpty) return 0;
-      if (aEmpty) return 1;
-      if (bEmpty) return -1;
-
-      const cmp = isNumeric
-        ? aNum - bNum
-        : aRaw.localeCompare(bRaw, 'es');
       return sortOrder === 'asc' ? cmp : -cmp;
     });
-  }, [filteredStations, sortField, sortOrder, selectedFuel]);
+  }, [filteredStations, sortField, sortOrder]);
 
   // Paginación
   const totalPages = Math.ceil(sortedStations.length / pageSize);
@@ -96,15 +122,6 @@ const FuelTable = ({ stations }) => {
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedProvince, selectedCity, selectedFuel]);
-
-  const SortCol = ({ field, label }: { field: string; label: string }) => (
-    <th>
-      <button className="sortable" onClick={() => handleSort(field)}>
-        {label}{' '}
-        {sortField === field ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
-      </button>
-    </th>
-  );
 
   return (
     <div>
@@ -131,11 +148,11 @@ const FuelTable = ({ stations }) => {
       <table className="fuel-table">
         <thead>
           <tr>
-            <SortCol field="Rótulo" label="Gasolinera" />
-            <SortCol field="Dirección" label="Dirección" />
-            <SortCol field="Municipio" label="Municipio" />
-            <SortCol field="Precio Gasoleo A" label="Gasóleo A" />
-            <SortCol field="Precio Gasolina 95 E5" label="Gasolina 95 E5" />
+            <SortCol field="Rótulo" label="Gasolinera" sortField={sortField} sortOrder={sortOrder} onSort={handleSort} />
+            <SortCol field="Dirección" label="Dirección" sortField={sortField} sortOrder={sortOrder} onSort={handleSort} />
+            <SortCol field="Municipio" label="Municipio" sortField={sortField} sortOrder={sortOrder} onSort={handleSort} />
+            <SortCol field="Precio Gasoleo A" label="Gasóleo A" sortField={sortField} sortOrder={sortOrder} onSort={handleSort} />
+            <SortCol field="Precio Gasolina 95 E5" label="Gasolina 95 E5" sortField={sortField} sortOrder={sortOrder} onSort={handleSort} />
             <th>Detalle</th>
           </tr>
         </thead>

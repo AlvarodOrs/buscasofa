@@ -16,7 +16,6 @@ import PageNotFound from "./404"; // New
 
 // @ts-ignore
 import './App.css';
-import { Icon } from 'leaflet';
 
 
 // Componente principal de la aplicación
@@ -55,6 +54,9 @@ function AppContent() {
           setLoading(false);
         });
     }, []);
+    // useEffect(() => {
+    //   if (stations.length > 0) console.log(Object.keys(stations[0]));
+    // }, [stations]);
   return (
     <>
       <Header user={user?.username} />
