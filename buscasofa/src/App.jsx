@@ -1,8 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchFuelPrices } from './apis/fuelApiLib';
-import { FuelApi } from './apis/FuelApi';
-
 
 import Header from './components/Header';
 import FuelMap from './components/FuelMap';
@@ -29,12 +27,16 @@ import './App.css';
 // El componente Header se encarga de mostrar la barra de navegación y el estado de autenticación del usuario.
 // El componente Routes se encarga de definir las diferentes rutas de la aplicación y los componentes que se renderizan en cada ruta.
 // El componente BrowserRouter se encarga de gestionar la navegación entre las diferentes rutas de la aplicación.
-function App() {
-
+function AppContent() {
   const [stations, setStations] = useState([]);
   const [user, setUser] = useState({username: "", email: ""});
   const [loading, setLoading] = useState(true);   // Inicialmente cargando ...
   const [error, setError] = useState(null);
+
+  const location = useLocation(); // New -> Quitar 'Cargando...' de las pantallas que no necesiten respuestas de la API
+  const neededAPI =
+    ["/", "/mapa", "/lista"].includes(location.pathname) ||
+     /^\/station\/[^/]+$/.test(location.pathname);
 
     useEffect(() => {
       fetchFuelPrices()
@@ -50,10 +52,10 @@ function App() {
     }, []);
 
   return (
-    <BrowserRouter>
+    <>
       <Header user={user.username} />
-      {loading && <div className="loading">Cargando...</div>}
-      {error && <div className="error">Error: {error}</div>}
+      {(neededAPI && loading) && <div className="loading">Cargando...</div>}
+      {(neededAPI && error) && <div className="error">Error: {error}</div>}
       {/* Comentado para agilizar proceso de enrutamiento en pags no existentes */}
       {/* {!loading && !error && ( */}
         <Routes>
@@ -69,8 +71,14 @@ function App() {
         </Routes>
         {/* )} */}
         <Footer />
+    </>
+  );
+}
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }
-
 export default App
