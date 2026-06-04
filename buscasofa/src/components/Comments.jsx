@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
+
+// @ts-ignore
 import './Comments.css';
+
+
+// /**
+//  * @param {{ stationId?: (id: string), user?: (user: string) => void }} props;
+//  */
 
 function Comments({ stationId, user }) {
   const [comments, setComments] = useState([]);

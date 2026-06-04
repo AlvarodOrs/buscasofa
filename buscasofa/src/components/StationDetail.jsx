@@ -1,8 +1,8 @@
 import { useParams, Link, useLocation } from 'react-router-dom';
 import Comments from './Comments';
 
-import './StationDetail.css'
-import './Form.css'
+// @ts-ignore
+import './StationDetail.css'; import './Form.css';
 
 
 function StationDetail({ stations, user }) {

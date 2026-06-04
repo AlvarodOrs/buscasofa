@@ -1,12 +1,13 @@
 import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
-import { useNavigate } from 'react-router-dom';
-import L from 'leaflet';
-import './FuelMap.css'
 import { useEffect, useMemo, useRef, useState } from 'react';
-import 'leaflet/dist/leaflet.css';
-
+import { useNavigate } from 'react-router-dom';
 import { getDistanceKm } from '@/apis/utils';
 import React from 'react';
+import L from 'leaflet';
+
+// @ts-ignore
+import './FuelMap.css'; import 'leaflet/dist/leaflet.css';
+
 
 const icon = new L.Icon({
   iconUrl: './gas-pump.png',

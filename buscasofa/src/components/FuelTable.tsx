@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import FuelFilters from './FuelFilters';
+
+// @ts-ignore
 import './FuelTable.css';
+
 
 const PAGE_SIZE = 20;
 

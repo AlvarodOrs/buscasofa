@@ -1,5 +1,9 @@
 import React from 'react';
 
+// @ts-ignore
+import './FuelFilters.css';
+
+
 interface FuelFiltersProps {
     provinces: string[];
     cities: string[];

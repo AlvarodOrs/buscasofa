@@ -1,8 +1,12 @@
-import React from 'react'
+import React from 'react';
+
+// @ts-ignore
+import './Footer.css';
+
 
 const Footer = () => {
   return (
-    <div>
+    <div className="footer">
         <h2>Miembros del equipo:</h2>
         <ul>
             <li>Álvaro d'Ors Nestares</li>

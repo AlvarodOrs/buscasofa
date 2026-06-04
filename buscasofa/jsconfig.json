@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -17,5 +18,6 @@
     "strictNullChecks": true,
     "checkJs": true
   },
+  "include": ["cypress", "src"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }

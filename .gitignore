@@ -4,6 +4,8 @@
 **/*.env
 **/*.docx
 
+**/database.db
+
 # Logs
 logs
 *.log
