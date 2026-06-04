@@ -1,0 +1,38 @@
+@import '../styles/variables.css';
+
+header {
+    background: var(--dark);
+    color: var(--white);
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    height: 3rem;
+}
+
+nav a {
+    vertical-align: middle;
+    padding: 10px;
+    color: var(--surface);
+    margin-right: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: var(--secondary);
+}
+
+button {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: var(--accent);
+  color: var(--white);
+}

@@ -1,0 +1,19 @@
+@import '../styles/variables.css';
+
+.home-container {
+  background: var(--surface);
+  color: var(--text);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(37, 69, 71, 0.12);
+}
+.home-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.home-container td, .home-container th {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--surface-strong);
+}

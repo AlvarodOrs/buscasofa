@@ -1,0 +1,46 @@
+@import '../styles/variables.css';
+
+form {
+  background: var(--surface);
+  color: var(--text);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 12px rgba(37, 69, 71, 0.12);
+}
+
+form input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--text);
+}
+
+form button {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+form button:hover {
+  background: var(--accent);
+  color: var(--white);
+}
+
+form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--text);
+}

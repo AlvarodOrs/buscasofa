@@ -1,0 +1,70 @@
+@import '../styles/variables.css';
+
+.fuel-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  color: var(--text);
+}
+
+.fuel-table th {
+  background: var(--dark);
+  color: var(--white);
+  padding: 0.75rem;
+}
+
+td, th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 150px;
+}
+
+.fuel-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--surface-strong);
+}
+
+.fuel-table tr:hover {
+  background: var(--surface-strong);
+  color: var(--text);
+}
+
+.fuel-table a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.fuel-table a:hover {
+  color: var(--secondary);
+  font-weight: bold;
+}
+
+.fuel-table th button.sortable {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fuel-filters {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+.fuel-filters select {
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--primary);
+  background: var(--surface);
+  color: var(--text);
+}
