@@ -3,7 +3,7 @@
  * @returns precios actualizados cada media hora
  */
 export async function fetchFuelPrices() {
-  console.log('Obteniendo nuenvos precios...');
+  console.log('Obteniendo nuevos precios...'); // Typo
   const response = await fetch(
     'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
   );

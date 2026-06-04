@@ -7,7 +7,6 @@ import './StationDetail.css'; import './Form.css';
 
 function StationDetail({ stations, user }) {
   const location = useLocation();
-  // console.log(location);
   const {gobackLink} = location.state;
 
   const { id } = useParams();

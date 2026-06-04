@@ -23,9 +23,6 @@ function getAverage(values: string[]) {
 
 
 const Home = ({ stations }) => {
-
-  console.log(stations);
-
   // Nacional: medias por tipo de combustible
   const nationalSummary = useMemo(() => {
     return FUEL_TYPES.map(fuel => {
@@ -34,7 +31,6 @@ const Home = ({ stations }) => {
       return { ...fuel, avg };
     }).sort((a, b) => (b.avg && a.avg ? parseFloat(b.avg) - parseFloat(a.avg) : 0));
   }, [stations]);
-  console.log(nationalSummary);
 
   // Por comunidad autónoma
   const regionSummary = useMemo(() => {
@@ -49,10 +45,7 @@ const Home = ({ stations }) => {
       return { regionName, fuelPrices };
     });
   }, [stations]);
-
-
-  console.log(regionSummary)
-
+  
   return (
     <div className="home-container">
       <h1>Buscasofa</h1>

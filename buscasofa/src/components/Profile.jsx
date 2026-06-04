@@ -3,7 +3,8 @@ import React from 'react';
 // @ts-ignore
 import './Profile.css';
 
-function Profile({ user }) {
+function Profile() {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
   if (!(user.email || user.username)) {
     return (
       <div className="about-container">
