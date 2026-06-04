@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react'
-import './Home.css'
-import { COMUNIDADES_AUTONOMAS } from '../apis/fuelApiLib'
+import { COMUNIDADES_AUTONOMAS } from '../apis/fuelApiLib';
+import React, { useMemo } from 'react';
+
+// @ts-ignore
+import './Home.css';
 
 
 const FUEL_TYPES = [

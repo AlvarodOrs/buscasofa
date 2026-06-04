@@ -1,4 +1,8 @@
-import React from 'react'
+import React from 'react';
+
+// @ts-ignore
+import './Footer.css';
+
 
 const Footer = () => {
   return (

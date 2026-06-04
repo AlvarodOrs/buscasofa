@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import './Form.css'
+
+// @ts-ignore
+import './Form.css';
+
 
 function Login({ onLogin }) {
   const [form, setForm] = useState({ email: '', password: '' });
