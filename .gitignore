@@ -35,3 +35,5 @@ cypress/videos
 cypress/reports
 
 # buscasofa-server
+
+**/*.db
