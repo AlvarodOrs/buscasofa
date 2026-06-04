@@ -34,7 +34,6 @@ function Comments({ stationId, user }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, station_id: stationId, comment, rating })
     });
-    console.log(localStorage.getItem('token'))
     const data = await res.json();
     if (res.ok) {
       setComment('');

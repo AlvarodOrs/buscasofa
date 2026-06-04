@@ -4,20 +4,15 @@ import { Link } from 'react-router-dom';
 // @ts-ignore
 import logo from '../assets/logo.png'; import './Header.css';
 
-
 function Header({ user }) {
 
-    const handleLogin = () => {
-        // Lógica de inicio de sesión
-        console.log('Iniciar sesión');
-    };
     const handleLogout = () => {
         if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
             window.location.href = '/';
         }
     };
-
     return (
         <header>
             <nav>
@@ -38,7 +33,7 @@ function Header({ user }) {
                     }
                     {user &&
                         <>
-                            <span style={{ marginRight: '1rem' }}>Bienvenido, <Link to="/perfil">{user}</Link></span>
+                            <span style={{ marginRight: '1rem' }}>Bienvenido,<Link to="/perfil">{user}</Link></span>
                             <button onClick={handleLogout}>Cerrar sesión</button>
                         </>
                     }

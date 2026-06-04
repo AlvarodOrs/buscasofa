@@ -97,7 +97,7 @@ function FuelMap({ stations }) {
             max={30}
             value={radius}
             onChange={e => setRadius(Number(e.target.value))}
-            style={{ marginLeft: '1rem', verticalAlign: 'middle' }}
+            style={{ marginLeft: '1rem', verticalAlign: 'middle', touchAction: 'None', cursor: 'grab'}}
           />
         </div>
       </div>

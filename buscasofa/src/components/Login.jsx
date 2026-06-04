@@ -8,7 +8,7 @@ import './Form.css';
 // /**
 //  * @param {{ onLogin?: (username: string) => void }} props
 //  */
-function Login({ onLogin }) {
+function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
@@ -40,8 +40,7 @@ function Login({ onLogin }) {
       setMsg('¡Bienvenido, ' + data.username + '!');
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(user));
-      if (onLogin) onLogin(user);
-      navigate('/perfil');
+      window.location.href = '/perfil';
     } else {
       setMsg(data.message);
     }

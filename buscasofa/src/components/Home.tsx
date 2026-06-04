@@ -21,11 +21,15 @@ function getAverage(values: string[]) {
   return (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(3);
 }
 
+function getMinMax(regionSummary, fuelKey) {
+  const vals = regionSummary
+    .map(r => r.fuelPrices.find(f => f.key === fuelKey)?.avg)
+    .filter(Boolean)
+    .map(Number);
+  return { min: Math.min(...vals), max: Math.max(...vals) };
+}
 
 const Home = ({ stations }) => {
-
-  console.log(stations);
-
   // Nacional: medias por tipo de combustible
   const nationalSummary = useMemo(() => {
     return FUEL_TYPES.map(fuel => {
@@ -34,7 +38,6 @@ const Home = ({ stations }) => {
       return { ...fuel, avg };
     }).sort((a, b) => (b.avg && a.avg ? parseFloat(b.avg) - parseFloat(a.avg) : 0));
   }, [stations]);
-  console.log(nationalSummary);
 
   // Por comunidad autónoma
   const regionSummary = useMemo(() => {
@@ -50,9 +53,12 @@ const Home = ({ stations }) => {
     });
   }, [stations]);
 
-
-  console.log(regionSummary)
-
+  const minMax = useMemo(() => {
+  return Object.fromEntries(
+    FUEL_TYPES.map(f => [f.key, getMinMax(regionSummary, f.key)])
+  );
+  
+}, [regionSummary]);
   return (
     <div className="home-container">
       <h1>Buscasofa</h1>
@@ -92,9 +98,16 @@ const Home = ({ stations }) => {
           {regionSummary.map(region => (
             <tr key={region.regionName}>
               <td>{region.regionName}</td>
-              {region.fuelPrices.map(fuel => (
-                <td key={fuel.key}>{fuel.avg ?? 'N/A'}</td>
-              ))}
+              {region.fuelPrices.map(fuel => {
+                const val = fuel.avg ? Number(fuel.avg) : null;
+                const { min, max } = minMax[fuel.key];
+                const color = val === min ? '#b6fcb6' : val === max ? '#ffb3b3' : undefined;
+                return (
+                  <td key={fuel.key} style={{ backgroundColor: color }}>
+                    {fuel.avg ?? 'N/A'}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

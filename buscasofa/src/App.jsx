@@ -27,17 +27,21 @@ import './App.css';
 // El componente Header se encarga de mostrar la barra de navegación y el estado de autenticación del usuario.
 // El componente Routes se encarga de definir las diferentes rutas de la aplicación y los componentes que se renderizan en cada ruta.
 // El componente BrowserRouter se encarga de gestionar la navegación entre las diferentes rutas de la aplicación.
+function PageFooter({path}) {
+  if (path) return <><Footer /></>
+}
 function AppContent() {
   const [stations, setStations] = useState([]);
-  const [user, setUser] = useState({username: "", email: ""});
-  const [loading, setLoading] = useState(true);   // Inicialmente cargando ...
+  const [user] = useState(() =>
+      localStorage.getItem('token') ? JSON.parse(localStorage.getItem('user') || 'null') : null
+  );
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const location = useLocation(); // New -> Quitar 'Cargando...' de las pantallas que no necesiten respuestas de la API
   const neededAPI =
     ["/", "/mapa", "/lista"].includes(location.pathname) ||
      /^\/station\/[^/]+$/.test(location.pathname);
-
+  const neededFooter = !["/mapa", "/about"].includes(location.pathname);
     useEffect(() => {
       fetchFuelPrices()
         .then(data => {
@@ -50,27 +54,26 @@ function AppContent() {
           setLoading(false);
         });
     }, []);
-
   return (
     <>
-      <Header user={user.username} />
+      <Header user={user?.username} />
       {(neededAPI && loading) && <div className="loading">Cargando...</div>}
       {(neededAPI && error) && <div className="error">Error: {error}</div>}
       {/* Comentado para agilizar proceso de enrutamiento en pags no existentes */}
       {/* {!loading && !error && ( */}
         <Routes>
-          <Route path="/" element={<Home stations={stations} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/registro" element={<Register />} />
-          <Route path="/login" element={<Login onLogin={setUser} />} />
-          <Route path="/mapa" element={<FuelMap stations={stations} />} />
-          <Route path="/lista" element={<FuelTable stations={stations} />} />
+          <Route path="/"            element={<Home stations={stations} />} />
+          <Route path="/about"       element={<About />} />
+          <Route path="/registro"    element={<Register />} />
+          <Route path="/login"       element={<Login />} />
+          <Route path="/mapa"        element={<FuelMap stations={stations} />} />
+          <Route path="/lista"       element={<FuelTable stations={stations} />} />
           <Route path="/station/:id" element={<StationDetail stations={stations} user={user} />} />
-          <Route path="/perfil" element={<Profile user={user} />} /* New */ /> 
-          <Route path="*" element={<PageNotFound />} /* New */ /> 
+          <Route path="/perfil"      element={<Profile />} /* New */ /> 
+          <Route path="*"            element={<PageNotFound />} /* New */ /> 
         </Routes>
         {/* )} */}
-        <Footer />
+        <PageFooter path={neededFooter} />
     </>
   );
 }
