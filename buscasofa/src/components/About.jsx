@@ -10,7 +10,15 @@ const About = () => {
     <div className="about-container">
         <h1>Quienes somos</h1>
         <div id="info">
-            Somos el equipo nº 3
+            Somos el equipo nº 3.
+        </div>
+        <h1>Acerca de nosotros:</h1>
+        <div id="description">
+            Álvaro d'Ors Nestares ha hecho el desarrollo del código gracias a que
+            Álvaro Marcos Miguel se ha encargado de la elaboración de la memoria,
+            Fabian Arana Machuca realizó la redacción de esta,
+            Roberto García Suárez finalizó la revisión y corrección de la memoria y
+            Jaime García Cabanillas se ocupó de la documentación del proyecto.
         </div>
     </div>
 
@@ -18,3 +26,4 @@ const About = () => {
 }
 
 export default About
+
