@@ -86,15 +86,17 @@ app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
     if (!email || !password)
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    
+    db.get('SELECT * FROM users WHERE email = ? OR username = ?', [identifier, identifier], async (err, user) => { // Modificado para aceptar email o nombre de usuario
+        if (err) return res.status(500).json({ message: 'Error del servidor' });
 
-    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-        if (!user) return res.status(401).json({ message: 'Credenciales incorrectas' });
+        if (!user) return res.status(401).json({ message: 'Ningún usuario registrado con ese email o nombre' });
 
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return res.status(401).json({ message: 'Credenciales incorrectas' });
 
         const token = jwt.sign({ id: user.id, username: user.username }, SECRET, { expiresIn: '1h' });
-        res.json({ message: 'Login correcto', token, username: user.username });
+        res.json({ message: 'Login correcto', token, username: user.username, email: user.email });
     });
 });
 

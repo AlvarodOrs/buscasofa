@@ -1,6 +1,3 @@
-// @ts-ignore
-import './App.css';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchFuelPrices } from './apis/fuelApiLib';
@@ -19,6 +16,10 @@ import Footer from './components/Footer';
 import Profile from './components/Profile'; // New
 import PageNotFound from "./404"; // New
 
+// @ts-ignore
+import './App.css';
+
+
 // Componente principal de la aplicación
 // Este componente es el punto de entrada de la aplicación y se encarga de gestionar las rutas y el estado global de la aplicación.
 // Utiliza React Router para la navegación entre diferentes componentes y páginas.
@@ -31,7 +32,7 @@ import PageNotFound from "./404"; // New
 function App() {
 
   const [stations, setStations] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({username: "", email: ""});
   const [loading, setLoading] = useState(true);   // Inicialmente cargando ...
   const [error, setError] = useState(null);
 
@@ -48,28 +49,13 @@ function App() {
         });
     }, []);
 
-/*   useEffect(() => {
-    FuelApi.getInstance().getFuelPrices()
-      .then(data => {
-        console.log(data);
-        setStations(data.ListaEESSPrecio);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []); */
-
   return (
     <BrowserRouter>
-      <Header user={user} />
+      <Header user={user.username} />
       {loading && <div className="loading">Cargando...</div>}
       {error && <div className="error">Error: {error}</div>}
       {/* Comentado para agilizar proceso de enrutamiento en pags no existentes */}
       {/* {!loading && !error && ( */}
-        <Footer />
-      {/* )} */}
         <Routes>
           <Route path="/" element={<Home stations={stations} />} />
           <Route path="/about" element={<About />} />
@@ -78,9 +64,11 @@ function App() {
           <Route path="/mapa" element={<FuelMap stations={stations} />} />
           <Route path="/lista" element={<FuelTable stations={stations} />} />
           <Route path="/station/:id" element={<StationDetail stations={stations} user={user} />} />
-          <Route path="/perfil" element={<Profile details={details} />} /* New */ /> 
+          <Route path="/perfil" element={<Profile user={user} />} /* New */ /> 
           <Route path="*" element={<PageNotFound />} /* New */ /> 
         </Routes>
+        {/* )} */}
+        <Footer />
     </BrowserRouter>
   )
 }

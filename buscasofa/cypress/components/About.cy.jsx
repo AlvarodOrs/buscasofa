@@ -1,5 +1,5 @@
 /// <reference types="Cypress" />
-// import React from 'react'
+import React from 'react'
 import About from '../../src/components/About'
 
 describe('<About />', () => {
