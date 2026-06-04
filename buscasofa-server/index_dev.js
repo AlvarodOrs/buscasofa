@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
@@ -9,7 +11,7 @@ const SECRET = require("./secret").secret; // Cambia esto en producción
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.HOST || 'http://localhost:5173',
     methods: ['GET', 'POST'],
 })); // Algo de seguridad
 
@@ -102,26 +104,33 @@ app.post('/api/login', (req, res) => {
     });
 });
 
+function requireAuth(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // "Bearer <token>"
+    if (!token) return res.status(401).json({ message: 'Token requerido' });
+
+    try {
+        req.user = jwt.verify(token, SECRET);
+        next();
+    } catch {
+        return res.status(401).json({ message: 'Token inválido o expirado' });
+    }
+}
+
 // Añadir comentario
-app.post('/api/comments', (req, res) => {
-    const { token, station_id, comment, rating } = req.body;
-    if (!token || !station_id || !comment) return res.status(400).json({ message: 'Datos incompletos' });
+app.post('/api/comments', requireAuth, (req, res) => {
+    const { station_id, comment, rating } = req.body;
+
+    if (!station_id || !comment) return res.status(400).json({ message: 'Datos incompletos' });
 
     const parsedRating = rating == null ? null : Number(rating);
     if (rating != null && (Number.isNaN(parsedRating) || parsedRating < 0 || parsedRating > 5)) {
         return res.status(400).json({ message: 'Rating inválido. Debe ser un número entre 0 y 5.' });
     }
 
-    let payload;
-    try {
-        payload = jwt.verify(token, SECRET);
-    } catch {
-        return res.status(401).json({ message: 'Token inválido' });
-    }
-
     db.run(
         'INSERT INTO comments (station_id, user_id, username, comment, rating) VALUES (?, ?, ?, ?, ?)',
-        [station_id, payload.id, payload.username, comment, parsedRating],
+        [station_id, req.user.id, req.user.username, comment, parsedRating],
         function (err) {
             if (err) return res.status(500).json({ message: 'Error al guardar comentario', error: err.message });
             res.status(201).json({ message: 'Comentario guardado' });

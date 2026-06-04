@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 // @ts-ignore
 import './Comments.css';
@@ -14,25 +14,30 @@ function Comments({ stationId, user }) {
   const [rating, setRating] = useState(5);
   const [msg, setMsg] = useState('');
 
-  const fetchComments = async () => {
-    const res = await fetch(`http://localhost:4000/api/comments/${stationId}`);
+  const base = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+  const fetchComments = useCallback(async () => {
+    const res = await fetch(`${base}/api/comments/${stationId}`);
     const data = await res.json();
     setComments(data);
-  };
+  }, [stationId, base]);
 
   useEffect(() => {
     fetchComments();
     // eslint-disable-next-line
-  }, [stationId]);
+  }, [fetchComments]);
 
   const handleSubmit = async e => {
     e.preventDefault();
     setMsg('');
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:4000/api/comments', {
+    const res = await fetch(`${base}/api/comments/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, station_id: stationId, comment, rating })
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ station_id: stationId, comment, rating })
     });
     const data = await res.json();
     if (res.ok) {

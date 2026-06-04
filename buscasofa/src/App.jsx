@@ -16,6 +16,7 @@ import PageNotFound from "./404"; // New
 
 // @ts-ignore
 import './App.css';
+import { Icon } from 'leaflet';
 
 
 // Componente principal de la aplicación
