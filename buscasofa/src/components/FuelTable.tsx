@@ -62,7 +62,11 @@ const FuelTable = ({ stations }) => {
       const bNum = parseFloat(bRaw.replace(',', '.'));
       const isNumeric = !isNaN(aNum) && !isNaN(bNum);
 
-      
+      const aEmpty = !hasPrice(aRaw);
+      const bEmpty = !hasPrice(bRaw);
+      if (aEmpty && bEmpty) return 0;
+      if (aEmpty) return 1;
+      if (bEmpty) return -1;
 
       const cmp = isNumeric
         ? aNum - bNum
