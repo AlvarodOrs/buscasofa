@@ -5,10 +5,9 @@ import FuelFilters from './FuelFilters';
 // @ts-ignore
 import './FuelTable.css';
 
-
-const PAGE_SIZE = 20;
-
 const FuelTable = ({ stations }) => {
+
+  const [pageSize, setPageSize] = useState(20);
 
   // Filtros
   const [selectedProvince, setSelectedProvince] = useState('');
@@ -16,7 +15,7 @@ const FuelTable = ({ stations }) => {
   const [selectedFuel, setSelectedFuel] = useState('');
 
   // Orden
-  const [sortField, setSortField] = useState<string>('Precio Gasoleo A');
+  const [sortField, setSortField] = useState<string>('Rótulo');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // Paginación
@@ -41,32 +40,46 @@ const FuelTable = ({ stations }) => {
   );
 
   // Filtrado
+  const hasPrice = (val: string) => !!val && val.replace(',', '.') !== '' && val !== '-';
   const filteredStations = useMemo(() => {
     return stations.filter(station => {
+      if (!hasPrice(station['Precio Gasoleo A']) && !hasPrice(station['Precio Gasolina 95 E5'])) return false;
+
       const matchProvince = !selectedProvince || station.Provincia === selectedProvince;
       const matchCity = !selectedCity || station.Municipio === selectedCity;
-      const matchFuel =
-        !selectedFuel ||
-        (station[selectedFuel] && station[selectedFuel].replace(',', '.') !== '' && station[selectedFuel] !== '-');
+      const matchFuel = !selectedFuel || hasPrice(station[selectedFuel]);
       return matchProvince && matchCity && matchFuel;
     });
   }, [stations, selectedProvince, selectedCity, selectedFuel]);
 
   // Ordenación
   const sortedStations = useMemo(() => {
-    if (!selectedFuel) return filteredStations;
     return [...filteredStations].sort((a, b) => {
-      const aVal = parseFloat((a[sortField] || '0').replace(',', '.')) || 0;
-      const bVal = parseFloat((b[sortField] || '0').replace(',', '.')) || 0;
-      return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+      const aRaw = a[sortField] || '';
+      const bRaw = b[sortField] || '';
+
+      const aNum = parseFloat(aRaw.replace(',', '.'));
+      const bNum = parseFloat(bRaw.replace(',', '.'));
+      const isNumeric = !isNaN(aNum) && !isNaN(bNum);
+
+      const aEmpty = !hasPrice(aRaw);
+      const bEmpty = !hasPrice(bRaw);
+      if (aEmpty && bEmpty) return 0;
+      if (aEmpty) return 1;
+      if (bEmpty) return -1;
+
+      const cmp = isNumeric
+        ? aNum - bNum
+        : aRaw.localeCompare(bRaw, 'es');
+      return sortOrder === 'asc' ? cmp : -cmp;
     });
   }, [filteredStations, sortField, sortOrder, selectedFuel]);
 
   // Paginación
-  const totalPages = Math.ceil(sortedStations.length / PAGE_SIZE);
+  const totalPages = Math.ceil(sortedStations.length / pageSize);
   const paginatedStations = sortedStations.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
   );
 
   // Cambiar orden
@@ -84,6 +97,14 @@ const FuelTable = ({ stations }) => {
     setCurrentPage(1);
   }, [selectedProvince, selectedCity, selectedFuel]);
 
+  const SortCol = ({ field, label }: { field: string; label: string }) => (
+    <th>
+      <button className="sortable" onClick={() => handleSort(field)}>
+        {label}{' '}
+        {sortField === field ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}
+      </button>
+    </th>
+  );
 
   return (
     <div>
@@ -98,28 +119,23 @@ const FuelTable = ({ stations }) => {
         onCityChange={setSelectedCity}
         onFuelChange={setSelectedFuel}
       />
+      <label>
+        Elementos por página:{' '}
+        <select value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+        </select>
+      </label>
       <table className="fuel-table">
         <thead>
           <tr>
-            <th>Gasolinera</th>
-            <th>Dirección</th>
-            <th>Municipio</th>
-            <th>
-              <button
-                className="sortable"
-                onClick={() => handleSort('Precio Gasoleo A')}
-              >
-                Gasóleo A {sortField === 'Precio Gasoleo A' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-              </button>
-            </th>
-            <th>
-              <button
-                className="sortable"
-                onClick={() => handleSort('Precio Gasolina 95 E5')}
-              >
-                Gasolina 95 E5 {sortField === 'Precio Gasolina 95 E5' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-              </button>
-            </th>
+            <SortCol field="Rótulo" label="Gasolinera" />
+            <SortCol field="Dirección" label="Dirección" />
+            <SortCol field="Municipio" label="Municipio" />
+            <SortCol field="Precio Gasoleo A" label="Gasóleo A" />
+            <SortCol field="Precio Gasolina 95 E5" label="Gasolina 95 E5" />
             <th>Detalle</th>
           </tr>
         </thead>
@@ -136,9 +152,8 @@ const FuelTable = ({ stations }) => {
                   to={`/station/${station.IDEESS}`}
                   state={{
                     gobackLink: "/lista"
-                  }}
-                >
-                  Ver detalle
+                  }}>
+                    Ver detalle
                 </Link>
               </td>
             </tr>
@@ -147,21 +162,11 @@ const FuelTable = ({ stations }) => {
       </table>
       {/* Paginación */}
       <div className="pagination">
-        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-          {'<<'}
-        </button>
-        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
-          {'<'}
-        </button>
-        <span>
-          Página {currentPage} de {totalPages}
-        </span>
-        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
-          {'>'}
-        </button>
-        <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
-          {'>>'}
-        </button>
+        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}> {'<<'}</button>
+        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{'<'}</button>
+        <span>Página {currentPage} de {totalPages}</span>
+        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>{'>'}</button>
+        <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>{'>>'}</button>
       </div>
     </div>
   );

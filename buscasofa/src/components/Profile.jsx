@@ -4,13 +4,11 @@ import React from 'react';
 import './Profile.css';
 
 function Profile({ user }) {
-
-  if (!user) {
+  if (!(user.email || user.username)) {
     return (
       <div className="about-container">
         <h1>Perfil</h1>
-
-        <div id="info" className="profile-card">
+        <div id="info">
           <h2>Acceso restringido</h2>
           <p>No has iniciado sesión</p>
         </div>

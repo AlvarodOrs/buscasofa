@@ -6,13 +6,16 @@ import logo from '../assets/logo.png'; import './Header.css';
 
 
 function Header({ user }) {
-    const handleLogout = () => {
-        // Lógica de cierre de sesión
-        console.log('Cerrar sesión');
-    };
+
     const handleLogin = () => {
         // Lógica de inicio de sesión
         console.log('Iniciar sesión');
+    };
+    const handleLogout = () => {
+        if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        }
     };
 
     return (

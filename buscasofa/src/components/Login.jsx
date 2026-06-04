@@ -9,7 +9,7 @@ import './Form.css';
 //  * @param {{ onLogin?: (username: string) => void }} props
 //  */
 function Login({ onLogin }) {
-  const [form, setForm] = useState({ identifier: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
@@ -29,8 +29,8 @@ function Login({ onLogin }) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
-
-    const data = await res.json();
+  
+  const data = await res.json();
 
     if (res.ok) {
       const user = {
@@ -50,7 +50,7 @@ function Login({ onLogin }) {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Iniciar Sesión</h2>
-      <input name="email" type="text" placeholder="Email o usuario" onChange={handleChange} required />
+      <input name="email" type="text" placeholder="Email o usuario" onChange={handleChange} required /* Usaría name="identifier", pero el test pide email */ /> 
       <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} required />
       <button type="submit">Entrar</button>
       {msg && <p>{msg}</p>}

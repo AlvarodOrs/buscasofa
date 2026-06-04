@@ -8,13 +8,15 @@ const SECRET = require("./secret").secret; // Cambia esto en producción
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+})); // Algo de seguridad
 
 // Inicializa la base de datos SQLite
 const db = new sqlite3.Database('./database.db', (err) => {
-    if (err) {
-        console.error('Error al abrir la base de datos:', err.message);
-    } else {
+    if (err) console.error('Error al abrir la base de datos:', err.message);
+    else {
         console.log('Conectado a la base de datos SQLite');
         console.log('Creando la tabla de usuarios si no existe...');
         db.run(`
@@ -83,8 +85,8 @@ app.post('/api/register', (req, res) => {
 
 // Login de usuario
 app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password)
+    const { identifier, password } = req.body;
+    if (!identifier || !password)
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     
     db.get('SELECT * FROM users WHERE email = ? OR username = ?', [identifier, identifier], async (err, user) => { // Modificado para aceptar email o nombre de usuario
