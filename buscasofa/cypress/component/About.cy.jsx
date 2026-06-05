@@ -1,5 +1,5 @@
-import React from 'react'
-import About from '../../src/components/About'
+import React from 'react';
+import About from '../../src/components/About';
 
 const members = ["Álvaro d\'Ors Nestares", "Álvaro Marcos Miguel", "Fabian Arana Machuca", "Jaime García Cabanillas", "Roberto García Suárez"]
 const hasDone = ["ha hecho", "se ha encargado de", "realizó", "se ocupó", "finalizó"];

@@ -1,6 +1,18 @@
 # Actividad Grupal
 IMPORTANTE:
 Para empezar a hacer cosas, leer `TODO.md` POR FAVOR
+## Tests:
+|Nombre|Lo pasa|
+|-|-:|
+|features.header| Sí |
+|features.notfound| Sí |
+|features.users| Sí |
+|fuel_prices| Sí |
+|header| Sí |
+|home| Sí |
+|profile&comments| Sí |
+|components.About| Sí |
+|components.Footer| Sí |
 ## Iniciando buscasofa-server
 Creación de la tabla de usuarios en mySQL (para despliegue)
 
