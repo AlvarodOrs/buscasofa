@@ -85,7 +85,7 @@ function EditProfile({ user, token, onClose, onSave }) {
           <option value="password">Contraseña</option>
         </select>
 
-        <label>Nuevo {field === 'username' ? 'nombre' : field === 'email' ? 'email' : 'contraseña'}</label>
+        <label>Nuev{field === 'username' ? 'o nombre' : field === 'email' ? 'o correo electrónico' : 'a contraseña'}</label>
         <input
           type={field === 'password' ? 'password' : 'text'}
           placeholder={`Nuevo ${field}`}
