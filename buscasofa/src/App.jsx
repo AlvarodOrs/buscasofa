@@ -54,6 +54,9 @@ function AppContent() {
           setLoading(false);
         });
     }, []);
+    // useEffect(() => {
+    //   if (stations.length > 0) console.log(Object.keys(stations[0]));
+    // }, [stations]);
   return (
     <>
       <Header user={user?.username} />

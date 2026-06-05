@@ -8,7 +8,6 @@ export async function fetchFuelPrices() {
     'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
   );
   if (!response.ok) throw new Error('Error al descargar los precios');
-
   return response.json();
 }
 

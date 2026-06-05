@@ -15,7 +15,6 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^22.0.1",
     "axios": "^1.17.0",
     "leaflet": "^1.9.4",
     "react": "^19.1.0",
@@ -24,6 +23,7 @@
     "react-router-dom": "^7.6.0"
   },
   "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",

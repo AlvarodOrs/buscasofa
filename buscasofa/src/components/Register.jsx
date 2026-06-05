@@ -13,7 +13,8 @@ function Register() {
   const handleSubmit = async e => {
     e.preventDefault();
     setMsg('');
-    const res = await fetch('http://localhost:4000/api/register', {
+    const base = import.meta.env.VITE_API_URL  || 'http://localhost:4000';
+    const res = await fetch(`${base}/api/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)

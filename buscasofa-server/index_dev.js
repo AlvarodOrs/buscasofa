@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
@@ -9,7 +11,17 @@ const SECRET = require("./secret").secret; // Cambia esto en producción
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+        const allowed = [
+            /^https:\/\/.*\.devtunnels\.ms$/,   // dev
+            /^http:\/\/localhost:\d+$/,           // local
+        ];
+        if (!origin || allowed.some(pattern => pattern.test(origin))) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS blocked: ${origin}`));
+        }
+    },
     methods: ['GET', 'POST'],
 })); // Algo de seguridad
 
@@ -102,26 +114,33 @@ app.post('/api/login', (req, res) => {
     });
 });
 
+function requireAuth(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // "Bearer <token>"
+    if (!token) return res.status(401).json({ message: 'Token requerido' });
+
+    try {
+        req.user = jwt.verify(token, SECRET);
+        next();
+    } catch {
+        return res.status(401).json({ message: 'Token inválido o expirado' });
+    }
+}
+
 // Añadir comentario
-app.post('/api/comments', (req, res) => {
-    const { token, station_id, comment, rating } = req.body;
-    if (!token || !station_id || !comment) return res.status(400).json({ message: 'Datos incompletos' });
+app.post('/api/comments', requireAuth, (req, res) => {
+    const { station_id, comment, rating } = req.body;
+
+    if (!station_id || !comment) return res.status(400).json({ message: 'Datos incompletos' });
 
     const parsedRating = rating == null ? null : Number(rating);
     if (rating != null && (Number.isNaN(parsedRating) || parsedRating < 0 || parsedRating > 5)) {
         return res.status(400).json({ message: 'Rating inválido. Debe ser un número entre 0 y 5.' });
     }
 
-    let payload;
-    try {
-        payload = jwt.verify(token, SECRET);
-    } catch {
-        return res.status(401).json({ message: 'Token inválido' });
-    }
-
     db.run(
         'INSERT INTO comments (station_id, user_id, username, comment, rating) VALUES (?, ?, ?, ?, ?)',
-        [station_id, payload.id, payload.username, comment, parsedRating],
+        [station_id, req.user.id, req.user.username, comment, parsedRating],
         function (err) {
             if (err) return res.status(500).json({ message: 'Error al guardar comentario', error: err.message });
             res.status(201).json({ message: 'Comentario guardado' });
@@ -139,6 +158,44 @@ app.get('/api/comments/:station_id', (req, res) => {
             res.json(rows);
         }
     );
+});
+
+app.get('/api/comments/user/:username', (req, res) => {
+    db.all(
+        'SELECT comment, rating, created_at, station_id FROM comments WHERE username = ? ORDER BY created_at DESC',
+        [req.params.username],
+        (err, rows) => {
+            if (err) return res.status(500).json({ message: 'Error al obtener tus comentarios', error: err.message });
+            res.json(rows);
+        }
+    );
+});
+
+app.post('/api/user/update', requireAuth, (req, res) => { // Camnbio de username, email o pass
+    const { field, newValue, currentPassword } = req.body;
+
+    if (!['username', 'email', 'password'].includes(field))
+        return res.status(400).json({ message: 'Campo inválido' });
+    if (!newValue || !currentPassword)
+        return res.status(400).json({ message: 'Datos incompletos' });
+
+    db.get('SELECT * FROM users WHERE id = ?', [req.user.id], async (err, user) => {
+        if (err || !user) return res.status(500).json({ message: 'Usuario no encontrado' });
+
+        const valid = await bcrypt.compare(currentPassword, user.password);
+        if (!valid) return res.status(401).json({ message: 'Contraseña actual incorrecta' });
+
+        const valueToStore = field === 'password' ? await bcrypt.hash(newValue, 10) : newValue;
+
+        db.run(`UPDATE users SET ${field} = ? WHERE id = ?`, [valueToStore, req.user.id], function (err) {
+            if (err) return res.status(500).json({ message: 'Error al actualizar', error: err.message });
+
+            db.get('SELECT username, email FROM users WHERE id = ?', [req.user.id], (err, updated) => {
+                if (err) return res.status(500).json({ message: 'Error al obtener usuario actualizado' });
+                res.json({ message: 'Actualizado correctamente', user: updated });
+            });
+        });
+    });
 });
 
 app.listen(4000, () => console.log('Servidor backend (SQLite) en http://localhost:4000'));

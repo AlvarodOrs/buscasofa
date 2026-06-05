@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'; 
 import React, { useState } from 'react';
 
 // @ts-ignore
@@ -11,7 +10,6 @@ import './Form.css';
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [msg, setMsg] = useState('');
-  const navigate = useNavigate();
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -24,7 +22,8 @@ function Login() {
     password: form.password
   };
 
-  const res = await fetch('http://localhost:4000/api/login', {
+  const base = import.meta.env.VITE_API_URL  || 'http://localhost:4000';
+  const res = await fetch(`${base}/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
