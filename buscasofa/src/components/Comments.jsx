@@ -90,7 +90,7 @@ function Comments({ stationId, user }) {
       <ul className="comments-list">
         {comments.map((c, idx) => (
           <li key={idx}>
-            <strong>{c.username}</strong> <em>({new Date(new Date(c.created_at).getTime() + 2 * 60 * 60 * 1000).toLocaleString('es-ES')})</em>
+            <strong>{username}</strong><em>({new Date(new Date(c.created_at).getTime() + 2 * 60 * 60 * 1000).toLocaleString('es-ES')})</em>
             <div className="comment-rating">{renderStars(c.rating || c.stars || 0)}</div>
             <div>{c.comment}</div>
           </li>

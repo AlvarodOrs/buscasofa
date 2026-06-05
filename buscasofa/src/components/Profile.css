@@ -1,3 +1,7 @@
+.about-container {
+  margin: 2rem;
+  padding: 1rem;
+}
 .profile-card {
   background: var(--dark);
   color: #fff;
@@ -49,4 +53,141 @@
   padding: 2px 8px;
   border-radius: 8px;
   font-size: 0.8rem;
+}
+
+.comments-list {
+  padding-left: 1rem;
+}
+
+.comments-list h1 {
+}
+
+.comments-list li {
+  /* padding: 1rem; */
+  margin-left: 2rem;
+}
+
+.comments-list i {
+  font-size: 0.8rem;
+}
+
+.comments-list h3 {
+  padding-bottom: 0rem;
+  margin-bottom: 0rem;
+}
+.comment-section {}
+.comment-section h1 {}
+.comment-section blockquote {
+  padding: 0rem;
+  margin: 0rem;
+}
+.comment-section blockquote cite {
+  font-size: 0.8rem;
+}
+
+
+/* Button wrapper in profile header */
+.edit-btn-wrapper {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.btn-edit {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.btn-edit:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Overlay backdrop */
+.edit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal box */
+.edit {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.edit h3 {
+  margin: 0 0 0.5rem;
+}
+
+.edit label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.edit input,
+.edit select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-error {
+  color: #e53e3e;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.edit-actions button {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 1rem;
+  background: white;
+  transition: background 0.2s;
+}
+
+.edit-actions button:hover {
+  background: #f5f5f5;
+}
+
+.edit-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #4f46e5 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-primary:hover {
+  background: #4338ca !important;
 }
