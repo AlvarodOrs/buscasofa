@@ -19,13 +19,6 @@
 ### Cuando vuestra rama esté perfecta (todo cambio ha haber sido commited antes de esto)
  - git checkout dev
  - git merge <vuestro nombre>
+ - git push
 ## Por hacer
-### Código pase tests:
- - 
-### Nuevos tests:
- - Footer: Nuestros nombres
- - About:
-   - Nombres
-   - Descripcion
-   - Número de equipo
- - Otra prueba, a elegir 
+  - Que quede mejor
