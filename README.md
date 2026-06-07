@@ -13,6 +13,38 @@ Para empezar a hacer cosas, leer `TODO.md` POR FAVOR
 |profile&comments| Sí |
 |components.About| Sí |
 |components.Footer| Sí |
+
+## Para usar fuera de lan
+1. En `buscasofa/` crear: 
+
+```text
+# buscasofa/.env
+VITE_API_URL=y pones aqui la url
+```
+2. En `buscasofa-server`:
+```text
+// buscasofa-server/secrets.js
+
+module.exports = {
+  secret: "la clave de seguridad del server",
+  port_server: "4000",
+  port_app: "5173",
+  hostname_dev_out: `tu link fuera de lan`,
+  hostname_dev_lan: `http://localhost:5173`,
+};
+```
+
+## Usuario de prueba
+<details>
+  <summary>(clic para revelar)</summary>
+
+```text
+Nombre de usuario: test
+Correo electrónico: test@test.test
+Contraseña: test
+```
+</details>
+
 ## Iniciando buscasofa-server
 Creación de la tabla de usuarios en mySQL (para despliegue)
 
