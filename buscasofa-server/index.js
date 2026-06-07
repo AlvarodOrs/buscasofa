@@ -5,7 +5,7 @@ const cors = require('cors');
 
 // Para hacer login:
 const jwt = require('jsonwebtoken');
-const SECRET = '6isvK1s%40nLRnku'; // Usa una clave secreta segura
+const secret = '6isvK1s%40nLRnku'; // Usa una clave secreta segura
 
 const app = express();
 app.use(express.json());
@@ -60,7 +60,7 @@ app.post('/api/login', async (req, res) => {
     if (!valid) return res.status(401).json({ message: 'Credenciales incorrectas' });
 
     // Genera un token JWT
-    const token = jwt.sign({ id: user.id, username: user.username }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, username: user.username }, secret, { expiresIn: '1h' });
     res.json({ message: 'Login correcto', token, username: user.username });
   } catch (err) {
     res.status(500).json({ message: 'Error en el servidor', error: err.message });

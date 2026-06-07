@@ -8,6 +8,13 @@ import './Form.css';
 //  * @param {{ onLogin?: (username: string) => void }} props
 //  */
 function Login() {
+  const isLocal =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+
+  const base = isLocal
+    ? 'http://localhost:4000'
+    : import.meta.env.VITE_API_URL;
   const [form, setForm] = useState({ email: '', password: '' });
   const [msg, setMsg] = useState('');
 
@@ -22,7 +29,7 @@ function Login() {
     password: form.password
   };
 
-  const base = import.meta.env.VITE_API_URL  || 'http://localhost:4000';
+
   const res = await fetch(`${base}/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

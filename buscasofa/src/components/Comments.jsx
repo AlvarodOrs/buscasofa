@@ -14,7 +14,13 @@ function Comments({ stationId, user }) {
   const [rating, setRating] = useState(5);
   const [msg, setMsg] = useState('');
 
-  const base = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const isLocal =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+
+  const base = isLocal
+    ? 'http://localhost:4000'
+    : import.meta.env.VITE_API_URL;
 
   const fetchComments = useCallback(async () => {
     const res = await fetch(`${base}/api/comments/${stationId}`);

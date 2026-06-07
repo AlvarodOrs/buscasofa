@@ -7,23 +7,30 @@ import './Form.css';
 function Register() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [msg, setMsg] = useState('');
-
+  
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-
+  
   const handleSubmit = async e => {
     e.preventDefault();
     setMsg('');
-    const base = import.meta.env.VITE_API_URL  || 'http://localhost:4000';
-    const res = await fetch(`${base}/api/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    });
-    const data = await res.json();
-    setMsg(data.message);
-  };
+  const isLocal =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1';
+  
+  const base = isLocal
+  ? 'http://localhost:4000'
+  : import.meta.env.VITE_API_URL;
+  
+  const res = await fetch(`${base}/api/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(form)
+  });
+  const data = await res.json();
+  setMsg(data.message);
+};
 
-  return (
+return (
     <form onSubmit={handleSubmit} className='register-form'>
       <h2>Registro de Usuario</h2>
       <input name="username" placeholder="Usuario" onChange={handleChange} required />
