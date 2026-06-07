@@ -1,28 +1,29 @@
-require('dotenv').config();
-
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-
-const SECRET = require("./secret").secret; // Cambia esto en producción
+const {
+    secret,
+    hostname_dev_out,
+    hostname_dev_lan
+} = require("./secret");
 
 const app = express();
 app.use(express.json());
+const allowedOrigins = new Set([
+    hostname_dev_out,
+    hostname_dev_lan,
+]);
+
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowed = [
-            /^https:\/\/.*\.devtunnels\.ms$/,   // dev
-            /^http:\/\/localhost:\d+$/,           // local
-        ];
-        if (!origin || allowed.some(pattern => pattern.test(origin))) {
-            callback(null, true);
-        } else {
-            callback(new Error(`CORS blocked: ${origin}`));
-        }
-    },
-    methods: ['GET', 'POST'],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked: ${origin}`));
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
 })); // Algo de seguridad
 
 // Inicializa la base de datos SQLite
@@ -109,7 +110,7 @@ app.post('/api/login', (req, res) => {
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return res.status(401).json({ message: 'Credenciales incorrectas' });
 
-        const token = jwt.sign({ id: user.id, username: user.username }, SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, username: user.username }, secret, { expiresIn: '1h' });
         res.json({ message: 'Login correcto', token, username: user.username, email: user.email });
     });
 });
@@ -120,7 +121,7 @@ function requireAuth(req, res, next) {
     if (!token) return res.status(401).json({ message: 'Token requerido' });
 
     try {
-        req.user = jwt.verify(token, SECRET);
+        req.user = jwt.verify(token, secret);
         next();
     } catch {
         return res.status(401).json({ message: 'Token inválido o expirado' });

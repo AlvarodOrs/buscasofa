@@ -4,14 +4,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './Profile.css';
 
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const isLocal =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1';
+
+const base = isLocal
+  ? 'http://localhost:4000'
+  : import.meta.env.VITE_API_URL;
+
 const renderStars = value => '★'.repeat(value) + '☆'.repeat(5 - value);
 
 function Comments({ user }) {
   const [comments, setComments] = useState([]);
 
   const fetchComments = useCallback(async () => {
-    const res = await fetch(`${BASE_URL}/api/comments/user/${user.username}`);
+    const res = await fetch(`${base}/api/comments/user/${user.username}`);
     const data = await res.json();
     setComments(data);
   }, [user.username]);
@@ -54,7 +61,7 @@ function EditProfile({ user, token, onClose, onSave }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/api/user/update`, {
+      const res = await fetch(`${base}/api/user/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
