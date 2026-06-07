@@ -7,9 +7,32 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const secret = '6isvK1s%40nLRnku'; // Usa una clave secreta segura
 
+// Yo usaría como mínimo algo así
+// const {
+//     secret,
+//     hostname_dev_out,
+//     hostname_dev_lan
+// } = require("./secret"); // Algo mejor
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Y luego así, para bloquear posibles ataques de inyección y así desde otras urls
+// const allowedOrigins = new Set([
+//     hostname_dev_out,
+//     hostname_dev_lan,
+// ]);
+
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.has(origin)) {
+//       return callback(null, true);
+//     }
+//     return callback(new Error(`CORS blocked: ${origin}`));
+//   },
+//   methods: ['GET', 'POST', 'OPTIONS'],
+// })); // Algo de seguridad en desde donde se accede
 
 const dbConfig = {
   host: 'localhost',
