@@ -17,8 +17,8 @@ const About = () => {
             Álvaro d'Ors Nestares ha hecho el desarrollo del código gracias a que
             Álvaro Marcos Miguel se ha encargado de la elaboración de la memoria,
             Fabian Arana Machuca realizó la redacción de esta,
-            Roberto García Suárez finalizó la revisión y corrección de la memoria y
-            Jaime García Cabanillas se ocupó de la documentación del proyecto.
+            Jaime García Cabanillas finalizó la documentación del proyecto y
+            Roberto García Suárez se ocupó de NO HACER NADA. 
         </div>
     </div>
 
